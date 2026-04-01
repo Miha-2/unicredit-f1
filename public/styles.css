@@ -17,6 +17,7 @@ body {
   color: var(--text);
   font-family: 'Barlow', sans-serif;
   min-height: 100dvh;
+  width: 100%;
   display: flex;
   justify-content: center;
   -webkit-font-smoothing: antialiased;

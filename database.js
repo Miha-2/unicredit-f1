@@ -2,12 +2,14 @@ const initSqlJs = require('sql.js');
 const fs = require('fs');
 const path = require('path');
 
-const DB_PATH = path.join(__dirname, 'data.sqlite');
+const DATA_DIR = path.join(__dirname, 'data');
+const DB_PATH = path.join(DATA_DIR, 'data.sqlite');
 
 let db;
 
 async function getDb() {
   if (db) return db;
+  if (!fs.existsSync(DATA_DIR)) fs.mkdirSync(DATA_DIR);
   const SQL = await initSqlJs();
   if (fs.existsSync(DB_PATH)) {
     const fileBuffer = fs.readFileSync(DB_PATH);

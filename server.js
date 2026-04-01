@@ -11,6 +11,9 @@ const JWT_SECRET = 'f1teden-unicredit-secret-2025';
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
+app.get('/promotor', (req, res) => res.sendFile(path.join(__dirname, 'public/promotor/promotor.html')));
+app.get('/admin', (req, res) => res.sendFile(path.join(__dirname, 'public/admin/admin.html')));
+
 // ── Auth middleware ──────────────────────────────────────
 function authPromotor(req, res, next) {
   const token = req.headers.authorization?.split(' ')[1];
@@ -117,13 +120,14 @@ app.get('/api/submissions/search', authPromotor, (req, res) => {
 
 // ── Promotor: Record simulator time ──────────────────────
 app.post('/api/simulator', authPromotor, (req, res) => {
-  const { submission_id, lap_time, recorded_at } = req.body;
-  if (!submission_id || !lap_time || !recorded_at) {
+  const { submission_id, lap_time } = req.body;
+  if (!submission_id || !lap_time) {
     return res.status(400).json({ error: 'Manjkajoči podatki.' });
   }
   const sub = query('SELECT id, consent_marketing FROM submissions WHERE id = ?', [submission_id]);
   if (!sub.length) return res.status(404).json({ error: 'Prijava ne obstaja.' });
   if (!sub[0].consent_marketing) return res.status(403).json({ error: 'Oseba ni dala soglasja za nagrado.' });
+  const recorded_at = new Date().toISOString();
   run(
     'INSERT INTO simulator_times (submission_id, lap_time, recorded_at, promotor_id) VALUES (?, ?, ?, ?)',
     [submission_id, lap_time, recorded_at, req.user.id]

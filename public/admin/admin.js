@@ -40,17 +40,8 @@ async function loadStats() {
     }
 
     if (d.byPromotor.length) {
-      document.getElementById('by-promotor-list').innerHTML = `
-        <table class="admin-table">
-          <thead><tr><th>Promotor</th><th>Username</th><th>Št. vpisanih časov</th></tr></thead>
-          <tbody>${d.byPromotor.map(r => `
-            <tr>
-              <td>${r.name}</td>
-              <td style="color:var(--text-muted);">${r.username}</td>
-              <td class="lap">${r.count}</td>
-            </tr>`).join('')}
-          </tbody>
-        </table>`;
+      window._byPromotor = d.byPromotor;
+      renderPromotorTable();
     }
   } catch {}
 }
@@ -59,25 +50,36 @@ async function loadPromotors() {
   try {
     const res = await fetch('/api/admin/promotors', { headers: getAuthHeaders() });
     if (res.status === 401) return logout();
-    const data = await res.json();
-    const el = document.getElementById('promotors-list');
-    if (!data.length) {
-      el.innerHTML = '<div style="font-size:13px;color:rgba(255,255,255,0.18);font-style:italic;padding:12px 0;">Ni promotorjev.</div>';
-      return;
-    }
-    el.innerHTML = `
-      <table class="admin-table">
-        <thead><tr><th>Ime</th><th>Username</th><th>Dodan</th><th></th></tr></thead>
-        <tbody>${data.map(p => `
-          <tr>
-            <td>${p.name}</td>
-            <td style="color:var(--text-muted);">${p.username}</td>
-            <td style="color:var(--text-dim);">${formatDate(p.created_at)}</td>
-            <td><button class="btn-delete" onclick="deletePromotor(${p.id})">Izbriši</button></td>
-          </tr>`).join('')}
-        </tbody>
-      </table>`;
+    window._promotors = await res.json();
+    renderPromotorTable();
   } catch {}
+}
+
+function renderPromotorTable() {
+  const promotors = window._promotors || [];
+  const byPromotor = window._byPromotor || [];
+  const el = document.getElementById('promotors-list');
+
+  if (!promotors.length) {
+    el.innerHTML = '<div style="font-size:13px;color:rgba(255,255,255,0.18);font-style:italic;padding:12px 0;">Ni promotorjev.</div>';
+    return;
+  }
+
+  const countMap = {};
+  byPromotor.forEach(p => { countMap[p.username] = p.count; });
+
+  el.innerHTML = `
+    <table class="admin-table">
+      <thead><tr><th>Ime</th><th>Username</th><th>Vpisani časi</th><th></th></tr></thead>
+      <tbody>${promotors.map(p => `
+        <tr>
+          <td>${p.name}</td>
+          <td style="color:var(--text-muted);">${p.username}</td>
+          <td class="lap">${countMap[p.username] || 0}</td>
+          <td><button class="btn-delete" onclick="deletePromotor(${p.id})">Izbriši</button></td>
+        </tr>`).join('')}
+      </tbody>
+    </table>`;
 }
 
 async function deletePromotor(id) {
@@ -183,6 +185,9 @@ function showDashboard() {
 
 document.addEventListener('DOMContentLoaded', function () {
   document.getElementById('login-btn').addEventListener('click', login);
+  document.getElementById('login-username').addEventListener('keydown', function (e) {
+    if (e.key === 'Enter') login();
+  });
   document.getElementById('login-password').addEventListener('keydown', function (e) {
     if (e.key === 'Enter') login();
   });
