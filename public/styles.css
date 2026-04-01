@@ -86,7 +86,7 @@ main::before {
 
 /* ── hero ── */
 .hero {
-  padding: 28px 24px 24px;
+  padding: 20px 16px 16px;
   position: relative;
   z-index: 1;
   flex-shrink: 0;
@@ -133,7 +133,7 @@ main::before {
 .section-divider {
   height: 2px;
   background: var(--red);
-  margin: 0 24px;
+  margin: 0 16px;
   position: relative;
   z-index: 1;
 }
@@ -141,7 +141,7 @@ main::before {
 /* ── form section ── */
 .form-section {
   flex: 1;
-  padding: 28px 24px 0;
+  padding: 20px 16px 0;
   position: relative;
   z-index: 1;
 }
@@ -278,7 +278,7 @@ main::before {
 
 /* ── submit button ── */
 .submit-wrap {
-  padding: 24px 24px 0;
+  padding: 20px 16px 0;
   position: relative;
   z-index: 1;
 }

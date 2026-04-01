@@ -48,26 +48,64 @@
     </div>
   </div>
 
-  <div class="dash-body">
-    <!-- Stats -->
-    <section class="dash-section">
-      <div class="dash-section-title">Statistika</div>
-      <div class="stats-grid" id="stats-grid"></div>
-    </section>
-
-    <!-- Top 5 times -->
-    <section class="dash-section">
-      <div class="dash-section-title">Top 5 časov simulatorja</div>
-      <div id="top5-list" class="admin-table-wrap"></div>
-    </section>
-
-    <!-- By promotor + promotors merged -->
-    <section class="dash-section">
-      <div class="dash-section-title">Promotorji</div>
-      <div id="promotors-list" class="admin-table-wrap" style="margin-bottom:16px;"></div>
-      <button class="add-promotor-btn" id="add-promotor-btn">+ Dodaj promotorja</button>
-    </section>
+  <!-- TAB: Admin -->
+  <div id="tab-admin" class="tab-panel">
+    <div class="dash-body">
+      <section class="dash-section">
+        <div class="dash-section-title">Statistika</div>
+        <div class="stats-grid" id="stats-grid"></div>
+      </section>
+      <section class="dash-section">
+        <div class="dash-section-title">Najboljši čas po dnevih</div>
+        <div id="best-per-day-list" class="admin-table-wrap"></div>
+      </section>
+      <section class="dash-section">
+        <div class="dash-section-title">Promotorji</div>
+        <div id="promotors-list" class="admin-table-wrap" style="margin-bottom:16px;"></div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;">
+          <button class="add-promotor-btn" id="add-promotor-btn">+ Dodaj promotorja</button>
+          <button class="add-promotor-btn" onclick="exportCsv()" style="background:transparent;border-color:rgba(255,255,255,0.2);color:rgba(255,255,255,0.5);">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px;display:inline-block;vertical-align:middle;margin-right:5px;margin-bottom:1px;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            Izvozi kontakte (CSV)
+          </button>
+        </div>
+      </section>
+    </div>
   </div>
+
+  <!-- TAB: Lestvice -->
+  <div id="tab-lestvice" class="tab-panel" style="display:none;">
+    <div class="dash-body">
+      <section class="dash-section">
+        <div class="dash-section-title">Dnevni top 5</div>
+        <div id="lb-day-list"></div>
+      </section>
+      <section class="dash-section">
+        <div class="dash-section-title">Skupni top 5</div>
+        <div id="lb-all-list"></div>
+      </section>
+      <section class="dash-section" style="margin-bottom:0;">
+        <div class="dash-section-title">Iskanje osebe</div>
+        <div class="search-wrap">
+          <input id="lb-search-input" class="form-input" type="text" placeholder="Vnesite ime ali priimek..."/>
+          <button class="search-btn" id="lb-search-btn">Išči</button>
+        </div>
+        <div id="lb-search-results" style="margin-top:12px;"></div>
+      </section>
+    </div>
+  </div>
+
+  <!-- FOOTER TABS -->
+  <nav class="dash-footer-tabs">
+    <button class="footer-tab active" id="ftab-admin" onclick="adminSwitchTab('admin')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+      Pregled
+    </button>
+    <button class="footer-tab" id="ftab-lestvice" onclick="adminSwitchTab('lestvice')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+      Lestvice
+    </button>
+  </nav>
 </div>
 
 <!-- ADD PROMOTOR MODAL -->
@@ -94,6 +132,7 @@
   </div>
 </div>
 
+<script src="/shared/leaderboard.js"></script>
 <script src="/admin/admin.js"></script>
 </body>
 </html>

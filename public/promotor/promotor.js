@@ -19,25 +19,44 @@ function formatDateShort(dt) {
 function renderSubmissionCard(s) {
   const hasConsent = s.consent_marketing == 1;
   const hasTime = !!s.lap_time;
+  const hasFooter = hasTime || hasConsent;
   return `
     <div class="submission-card">
-      <div class="sub-main">
-        <div class="sub-name">${s.ime} ${s.priimek}</div>
-        <div class="sub-email">${s.email}</div>
-        <div class="sub-bottom">
-          <div class="sub-meta">Prijava: ${formatDateShort(s.created_at)}</div>
-          ${hasTime ? `
-            <div class="sub-lap">
-              <span class="sub-lap-time">${s.lap_time}</span>
-              <span class="sub-lap-date">${formatDateShort(s.lap_recorded_at)}</span>
-            </div>` : ''}
+      <div class="sub-body">
+        <div class="sub-left">
+          <div class="sub-top">
+            <div class="sub-name">${s.ime} ${s.priimek}</div>
+            <div class="sub-email">${s.email}</div>
+          </div>
+          <div class="sub-bottom">
+            <span class="badge ${hasConsent ? 'badge-yes' : 'badge-no'}">${hasConsent ? 'Nagrada' : 'Brez soglasja'}</span>
+          </div>
+        </div>
+        <div class="sub-right">
+          <span class="sub-date">${formatDateShort(s.created_at)}</span>
         </div>
       </div>
-      <div class="sub-actions">
-        <span class="badge ${hasConsent ? 'badge-yes' : 'badge-no'}">${hasConsent ? 'Nagrada ✓' : 'Brez soglasja'}</span>
-        ${hasConsent ? `<button class="btn-add-time" onclick="openModal(${s.id}, '${s.ime} ${s.priimek}')">+ Čas</button>` : ''}
-      </div>
+      ${hasFooter ? `<div class="sub-footer">
+        <div class="sub-footer-left">
+          ${hasTime ? `<div class="sub-lap"><span class="sub-lap-time">${s.lap_time}</span></div>` : ''}
+        </div>
+        <div class="sub-footer-right">
+          ${hasConsent ? `<button class="btn-add-time" onclick="openModal(${s.id}, '${s.ime} ${s.priimek}')">
+            <svg viewBox="0 0 24 24"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg>
+            Čas
+          </button>` : ''}
+        </div>
+      </div>` : ''}
     </div>`;
+}
+
+// ── Tab switching ─────────────────────────────────────────
+function switchTab(tab) {
+  document.getElementById('tab-prijave').style.display = tab === 'prijave' ? 'block' : 'none';
+  document.getElementById('tab-lestvice').style.display = tab === 'lestvice' ? 'block' : 'none';
+  document.getElementById('ftab-prijave').classList.toggle('active', tab === 'prijave');
+  document.getElementById('ftab-lestvice').classList.toggle('active', tab === 'lestvice');
+  if (tab === 'lestvice') lbLoad(getAuthHeaders()).catch(() => {});
 }
 
 async function loadRecent() {
@@ -158,6 +177,10 @@ function showDashboard(name) {
   const u = document.getElementById('dash-username');
   if (u) u.textContent = name || '';
   loadRecent();
+  setInterval(() => {
+    if (document.getElementById('tab-prijave').style.display !== 'none') loadRecent();
+    else lbLoad(getAuthHeaders()).catch(() => {});
+  }, 10000);
 }
 
 document.addEventListener('DOMContentLoaded', function () {
@@ -179,6 +202,8 @@ document.addEventListener('DOMContentLoaded', function () {
   document.getElementById('logout-btn').addEventListener('click', logout);
   document.getElementById('modal-cancel').addEventListener('click', closeModal);
   document.getElementById('modal-save').addEventListener('click', saveTime);
+
+  lbInitEvents(getAuthHeaders());
 
   if (token) {
     fetch('/api/submissions/recent', { headers: getAuthHeaders() }).then(r => {

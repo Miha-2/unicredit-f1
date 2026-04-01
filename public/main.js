@@ -37,6 +37,33 @@ function showSuccess() {
   s.scrollIntoView({ behavior: 'smooth', block: 'center' });
 }
 
+function showUpgraded() {
+  document.getElementById('mainForm').style.display = 'none';
+  document.querySelector('.submit-wrap').style.display = 'none';
+  var s = document.getElementById('upgraded-msg');
+  s.style.display = 'flex';
+  s.scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+
+function showDupModal(scenario) {
+  var modal = document.getElementById('dup-modal');
+  var title = document.getElementById('dup-title');
+  var desc = document.getElementById('dup-desc');
+  var actions = document.getElementById('dup-actions');
+  var icon = document.getElementById('dup-icon');
+
+  icon.textContent = '✓';
+  title.textContent = 'Že sodeluješ!';
+  desc.textContent = 'Ta e-poštni naslov je že prijavljen in se poteguješ za nagrado na F1 simulatorju. Vse je že urejeno!';
+  actions.innerHTML = '<button onclick="closeDupModal()" style="flex:1;height:52px;background:var(--red);border:none;color:#fff;font-family:\'Barlow Condensed\',sans-serif;font-weight:900;font-style:italic;font-size:18px;letter-spacing:0.1em;text-transform:uppercase;cursor:pointer;">V redu</button>';
+
+  modal.style.display = 'flex';
+}
+
+function closeDupModal() {
+  document.getElementById('dup-modal').style.display = 'none';
+}
+
 async function validateForm() {
   var ime = document.getElementById('field-ime').value.trim();
   var priimek = document.getElementById('field-priimek').value.trim();
@@ -73,6 +100,16 @@ async function validateForm() {
       body: JSON.stringify({ ime, priimek, email, consent_rules: cb1, consent_marketing: cb2 })
     });
     var data = await res.json();
+    if (res.status === 409 && data.duplicate) {
+      btn.disabled = false;
+      btn.style.opacity = '1';
+      if (data.scenario === 'has_consent') {
+        showDupModal();
+      } else {
+        showError('error-email', 'Ta e-poštni naslov je že prijavljen.');
+      }
+      return;
+    }
     if (!res.ok) throw new Error(data.error || 'Napaka pri pošiljanju.');
     showSuccess();
   } catch (err) {

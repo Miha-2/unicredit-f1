@@ -81,15 +81,15 @@
   font-weight: 700;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  background: transparent;
+  background: var(--red);
   border: 1px solid var(--red);
-  color: var(--red);
+  color: white;
   padding: 10px 20px;
   cursor: pointer;
   transition: background 0.15s, color 0.15s;
 }
 
-.add-promotor-btn:hover { background: var(--red); color: white; }
+.add-promotor-btn:hover { background: var(--red-dark); border-color: var(--red-dark); color: white; }
 
 .btn-delete {
   font-family: 'Barlow Condensed', sans-serif;
@@ -107,10 +107,115 @@
 
 .btn-delete:hover { border-color: #ff4d4d; color: #ff4d4d; }
 
-.dash-body { width: 100%; max-width: 100%; margin: 0 auto; padding: 24px 20px; box-sizing: border-box; }
+.dash-body { width: 100%; max-width: 100%; margin: 0 auto; padding: 16px 14px 80px; box-sizing: border-box; }
 
 @media (orientation: landscape) {
   .dash-body { max-width: 390px; }
+}
+
+/* ── Footer tabs ── */
+.dash-footer-tabs {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 58px;
+  background: #ffffff;
+  border-top: 2px solid var(--red);
+  display: flex;
+  z-index: 20;
+}
+
+@media (orientation: landscape) {
+  .dash-footer-tabs { max-width: 390px; left: 50%; transform: translateX(-50%); }
+}
+
+.footer-tab {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #aaa;
+  transition: color 0.15s;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.footer-tab svg { width: 20px; height: 20px; stroke: currentColor; }
+.footer-tab.active { color: var(--red); }
+
+/* ── Leaderboard (shared styles) ── */
+.lb-table { width: 100%; border-collapse: collapse; }
+.lb-table tr { border-bottom: 1px solid var(--border); }
+.lb-table tr:last-child { border-bottom: none; }
+
+.lb-rank {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 22px; font-weight: 900; font-style: italic;
+  color: var(--red); width: 32px;
+  padding: 10px 8px 10px 0; vertical-align: middle;
+}
+.lb-rank.gold { color: #FFD700; }
+.lb-rank.silver { color: #C0C0C0; }
+.lb-rank.bronze { color: #CD7F32; }
+
+.lb-name {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 16px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 0.04em; color: var(--text);
+  padding: 10px 8px; vertical-align: middle;
+}
+
+.lb-time {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 15px; font-weight: 700; color: #4caf50;
+  text-align: right; padding: 10px 0 10px 8px;
+  vertical-align: middle; white-space: nowrap;
+}
+
+.lb-empty { font-size: 13px; color: var(--text-dim); font-style: italic; padding: 12px 0; }
+
+.time-result-card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-left: 3px solid #4caf50; padding: 12px 14px; margin-bottom: 8px;
+}
+.time-result-name {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 17px; font-weight: 700; text-transform: uppercase;
+  color: var(--text); letter-spacing: 0.04em; margin-bottom: 6px;
+}
+.time-result-time {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 22px; font-weight: 900; font-style: italic;
+  color: #4caf50; margin-bottom: 8px;
+}
+.time-result-ranks { display: flex; gap: 8px; flex-wrap: wrap; }
+.rank-pill {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 11px; font-weight: 700; letter-spacing: 0.12em;
+  text-transform: uppercase; padding: 3px 10px;
+  border: 1px solid var(--border); color: var(--text-muted);
+}
+.rank-pill span { color: var(--red); font-size: 13px; }
+
+.no-results { font-size: 13px; color: var(--text-dim); padding: 16px 0; font-style: italic; }
+.search-wrap { display: flex; gap: 8px; }
+.search-wrap .form-input { flex: 1; margin: 0; }
+.search-btn {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 14px; font-weight: 700; letter-spacing: 0.1em;
+  text-transform: uppercase; background: var(--red);
+  border: none; color: white; padding: 0 20px;
+  cursor: pointer; height: 52px; white-space: nowrap;
 }
 
 #dashboard-screen, #login-screen {

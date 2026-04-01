@@ -48,23 +48,57 @@
     </div>
   </div>
 
-  <div class="dash-body">
-    <!-- Recent submissions -->
-    <section class="dash-section">
-      <div class="dash-section-title">Zadnjih 5 prijav</div>
-      <div id="recent-list" class="submission-list"></div>
-    </section>
-
-    <!-- Search -->
-    <section class="dash-section">
-      <div class="dash-section-title">Iskanje po imenu ali priimku</div>
-      <div class="search-wrap">
-        <input id="search-input" class="form-input" type="text" placeholder="Vnesite ime ali priimek..."/>
-        <button class="search-btn" id="search-btn">Išči</button>
-      </div>
-      <div id="search-results" class="submission-list" style="margin-top:12px;"></div>
-    </section>
+  <!-- TAB: Prijave -->
+  <div id="tab-prijave" class="tab-panel">
+    <div class="dash-body">
+      <section class="dash-section">
+        <div class="dash-section-title">Zadnjih 5 prijav</div>
+        <div id="recent-list" class="submission-list"></div>
+      </section>
+      <section class="dash-section">
+        <div class="dash-section-title">Iskanje po imenu ali priimku</div>
+        <div class="search-wrap">
+          <input id="search-input" class="form-input" type="text" placeholder="Vnesite ime ali priimek..."/>
+          <button class="search-btn" id="search-btn">Išči</button>
+        </div>
+        <div id="search-results" class="submission-list" style="margin-top:12px;"></div>
+      </section>
+    </div>
   </div>
+
+  <!-- TAB: Lestvice -->
+  <div id="tab-lestvice" class="tab-panel" style="display:none;">
+    <div class="dash-body">
+      <section class="dash-section">
+        <div class="dash-section-title">Dnevni top 5</div>
+        <div id="lb-day-list"></div>
+      </section>
+      <section class="dash-section">
+        <div class="dash-section-title">Skupni top 5</div>
+        <div id="lb-all-list"></div>
+      </section>
+      <section class="dash-section" style="margin-bottom:0;">
+        <div class="dash-section-title">Iskanje osebe</div>
+        <div class="search-wrap">
+          <input id="lb-search-input" class="form-input" type="text" placeholder="Vnesite ime ali priimek..."/>
+          <button class="search-btn" id="lb-search-btn">Išči</button>
+        </div>
+        <div id="lb-search-results" style="margin-top:12px;"></div>
+      </section>
+    </div>
+  </div>
+
+  <!-- FOOTER TABS -->
+  <nav class="dash-footer-tabs">
+    <button class="footer-tab active" id="ftab-prijave" onclick="switchTab('prijave')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+      Prijave
+    </button>
+    <button class="footer-tab" id="ftab-lestvice" onclick="switchTab('lestvice')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+      Lestvice
+    </button>
+  </nav>
 </div>
 
 <!-- TIME MODAL -->
@@ -84,6 +118,7 @@
   </div>
 </div>
 
+<script src="/shared/leaderboard.js"></script>
 <script src="/promotor/promotor.js"></script>
 </body>
 </html>

@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="sl">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,700;0,900;1,900&family=Barlow:wght@300;400&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="/styles.css"/>
+  <style>
+    .notfound-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      flex: 1;
+      padding: 40px 24px;
+      text-align: center;
+    }
+    .notfound-code {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 100px;
+      font-weight: 900;
+      font-style: italic;
+      line-height: 1;
+      color: var(--red);
+      letter-spacing: -2px;
+    }
+    .notfound-title {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 28px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text);
+      margin-top: 8px;
+      margin-bottom: 24px;
+    }
+    .notfound-desc {
+      font-size: 14px;
+      font-weight: 300;
+      color: var(--text-muted);
+      margin-bottom: 36px;
+      line-height: 1.6;
+    }
+  </style>
+</head>
+<body>
+<main>
+  <div class="top-stripe"></div>
+  <div class="logo-bar">
+    <img src="/unicredit_logo.png" alt="UniCredit" style="height:30px;"/>
+    <div class="logo-divider"></div>
+    <img src="/f1_logo_red.png" alt="Formula 1" style="height:26px;"/>
+  </div>
+  <div class="notfound-wrap">
+    <div class="notfound-code">404</div>
+    <div class="notfound-title">Stran ne obstaja</div>
+    <div class="notfound-desc">Ta stran ne obstaja ali je bila prestavljena.</div>
+    <a href="/" style="text-decoration:none;">
+      <button class="submit-btn" style="width:auto;padding:0 32px;">
+        Prijava na F1 Teden
+        <span class="btn-arrow"></span>
+      </button>
+    </a>
+  </div>
+</main>
+</body>
+</html>

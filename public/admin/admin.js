@@ -9,6 +9,14 @@ function formatDate(dt) {
   return new Date(dt).toLocaleString('sl-SI', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' });
 }
 
+function adminSwitchTab(tab) {
+  document.getElementById('tab-admin').style.display = tab === 'admin' ? 'block' : 'none';
+  document.getElementById('tab-lestvice').style.display = tab === 'lestvice' ? 'block' : 'none';
+  document.getElementById('ftab-admin').classList.toggle('active', tab === 'admin');
+  document.getElementById('ftab-lestvice').classList.toggle('active', tab === 'lestvice');
+  if (tab === 'lestvice') lbLoad(getAuthHeaders()).catch(() => {});
+}
+
 async function loadStats() {
   try {
     const res = await fetch('/api/admin/stats', { headers: getAuthHeaders() });
@@ -21,22 +29,22 @@ async function loadStats() {
       <div class="stat-card"><div class="stat-label">Vpisani časi</div><div class="stat-value">${d.totalTimes}</div></div>
     `;
 
-    if (d.top5.length) {
-      document.getElementById('top5-list').innerHTML = `
+    const bdEl = document.getElementById('best-per-day-list');
+    if (d.bestPerDay.length) {
+      bdEl.innerHTML = `
         <table class="admin-table">
-          <thead><tr><th>#</th><th>Čas</th><th>Voznik</th><th>Promotor</th><th>Datum</th></tr></thead>
-          <tbody>${d.top5.map((r, i) => `
+          <thead><tr><th>Dan</th><th>Čas</th><th>Voznik</th><th>Promotor</th></tr></thead>
+          <tbody>${d.bestPerDay.map(r => `
             <tr>
-              <td class="rank">${i + 1}</td>
-              <td class="lap">${r.lap_time}</td>
+              <td>${new Date(r.day).toLocaleDateString('sl-SI', { day: '2-digit', month: '2-digit', year: 'numeric' })}</td>
+              <td class="lap">${r.best_time}</td>
               <td>${r.ime} ${r.priimek}</td>
               <td>${r.promotor_name}</td>
-              <td>${formatDate(r.recorded_at)}</td>
             </tr>`).join('')}
           </tbody>
         </table>`;
     } else {
-      document.getElementById('top5-list').innerHTML = '<div class="no-results" style="font-size:13px;color:rgba(255,255,255,0.18);font-style:italic;padding:12px 0;">Ni vpisanih časov.</div>';
+      bdEl.innerHTML = '<div class="no-results" style="font-size:13px;color:rgba(255,255,255,0.18);font-style:italic;padding:12px 0;">Ni vpisanih časov.</div>';
     }
 
     if (d.byPromotor.length) {
@@ -44,6 +52,10 @@ async function loadStats() {
       renderPromotorTable();
     }
   } catch {}
+}
+
+function exportCsv() {
+  window.location.href = '/api/admin/export?token=' + token;
 }
 
 async function loadPromotors() {
@@ -195,6 +207,7 @@ document.addEventListener('DOMContentLoaded', function () {
   document.getElementById('add-promotor-btn').addEventListener('click', openAddModal);
   document.getElementById('add-cancel').addEventListener('click', closeAddModal);
   document.getElementById('add-save').addEventListener('click', addPromotor);
+  lbInitEvents(getAuthHeaders());
 
   if (token) {
     fetch('/api/admin/stats', { headers: getAuthHeaders() }).then(r => {
