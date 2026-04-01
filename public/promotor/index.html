@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="sl">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,600;0,700;0,900;1,700&family=Barlow:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="/styles.css"/>
+  <link rel="stylesheet" href="/promotor/promotor.css"/>
+</head>
+<body>
+<!-- LOGIN -->
+<div id="login-screen">
+  <main class="auth-main">
+    <div class="top-stripe"></div>
+    <div class="logo-bar">
+      <img src="/unicredit_logo.png" alt="UniCredit" style="height:30px;"/>
+      <div class="logo-divider"></div>
+      <img src="/f1_logo_red.png" alt="Formula 1" style="height:26px;"/>
+    </div>
+    <div class="auth-body">
+      <div class="auth-eyebrow">Dostop za osebje</div>
+      <div class="auth-title">Promotor<span class="auth-title-red">Login</span></div>
+      <div class="auth-form">
+        <div class="form-field">
+          <label class="form-label">Uporabniško ime</label>
+          <input id="login-username" class="form-input" type="text" placeholder="username" autocomplete="username"/>
+        </div>
+        <div class="form-field">
+          <label class="form-label">Geslo</label>
+          <input id="login-password" class="form-input" type="password" placeholder="••••••••" autocomplete="current-password"/>
+        </div>
+        <span class="field-error" id="login-error"></span>
+        <button class="submit-btn" id="login-btn" style="margin-top:16px;">
+          Prijava <span class="btn-arrow"></span>
+        </button>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- DASHBOARD -->
+<div id="dashboard-screen" style="display:none;">
+  <div class="dash-header">
+    <div class="dash-header-left">
+      <img src="/unicredit_logo.png" alt="UniCredit" style="height:24px; filter:brightness(0) invert(1);"/>
+      <span class="dash-title">F1 Teden · Promotor</span>
+    </div>
+    <div class="dash-header-right">
+      <span id="dash-username" class="dash-user"></span>
+      <button class="dash-logout" id="logout-btn">Odjava</button>
+    </div>
+  </div>
+
+  <div class="dash-body">
+    <!-- Recent submissions -->
+    <section class="dash-section">
+      <div class="dash-section-title">Zadnjih 5 prijav</div>
+      <div id="recent-list" class="submission-list"></div>
+    </section>
+
+    <!-- Search -->
+    <section class="dash-section">
+      <div class="dash-section-title">Iskanje po imenu ali priimku</div>
+      <div class="search-wrap">
+        <input id="search-input" class="form-input" type="text" placeholder="Vnesite ime ali priimek..."/>
+        <button class="search-btn" id="search-btn">Išči</button>
+      </div>
+      <div id="search-results" class="submission-list" style="margin-top:12px;"></div>
+    </section>
+  </div>
+</div>
+
+<!-- TIME MODAL -->
+<div id="time-modal" class="modal-overlay" style="display:none;">
+  <div class="modal">
+    <div class="modal-title">Vpis časa simulatorja</div>
+    <div id="modal-person" class="modal-person"></div>
+    <div class="form-field" style="margin-top:16px;">
+      <label class="form-label">Čas (mm:ss.ms)</label>
+      <input id="modal-time" class="form-input" type="text" placeholder="01:23.456"/>
+    </div>
+    <div class="form-field">
+      <label class="form-label">Datum in čas</label>
+      <input id="modal-datetime" class="form-input" type="datetime-local"/>
+    </div>
+    <span class="field-error" id="modal-error"></span>
+    <div class="modal-actions">
+      <button class="modal-cancel" id="modal-cancel">Prekliči</button>
+      <button class="submit-btn" id="modal-save" style="flex:1;">Shrani</button>
+    </div>
+  </div>
+</div>
+
+<script src="/promotor/promotor.js"></script>
+</body>
+</html>

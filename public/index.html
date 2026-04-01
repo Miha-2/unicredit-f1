@@ -33,15 +33,18 @@
       <div class="prizes-label" style="margin-bottom:20px;">Prijava · Vaši podatki</div>
       <div class="form-field">
         <label class="form-label">Ime</label>
-        <input class="form-input" type="text" placeholder="Janez" autocomplete="given-name"/>
+        <input id="field-ime" class="form-input" type="text" placeholder="Janez" autocomplete="given-name"/>
+        <span class="field-error" id="error-ime"></span>
       </div>
       <div class="form-field">
         <label class="form-label">Priimek</label>
-        <input class="form-input" type="text" placeholder="Novak" autocomplete="family-name"/>
+        <input id="field-priimek" class="form-input" type="text" placeholder="Novak" autocomplete="family-name"/>
+        <span class="field-error" id="error-priimek"></span>
       </div>
       <div class="form-field">
         <label class="form-label">E-pošta</label>
-        <input class="form-input" type="email" placeholder="janez@example.com" autocomplete="email"/>
+        <input id="field-email" class="form-input" type="email" placeholder="janez@example.com" autocomplete="email"/>
+        <span class="field-error" id="error-email"></span>
       </div>
 
       <div class="checkbox-section">
@@ -50,6 +53,7 @@
           <div class="cb-content">
             <div class="cb-title">Seznanjen/a sem s <a href="#">pravili nagradne igre</a> in se z njimi strinjam. <span style="color:var(--red);">*</span></div>
             <div class="cb-desc">Upravljavec osebnih podatkov je UniCredit Banka Slovenija d.d. Podatki se obdelujejo izključno za namen izvedbe nagradne igre.</div>
+            <span class="field-error" id="error-cb1"></span>
           </div>
         </div>
         <div class="checkbox-item" onclick="toggleReward()">
@@ -65,10 +69,16 @@
         </div>
       </div>
     </form>
+
+    <div id="success-msg" class="success-msg">
+      <div class="success-icon">&#10003;</div>
+      <div class="success-title">Prijava uspešna!</div>
+      <div class="success-desc">Hvala za prijavo. Dobrodošli v F1 Teden izkušnji UniCredit × Ferrari.</div>
+    </div>
   </div>
 
   <div class="submit-wrap">
-    <button class="submit-btn" onclick="document.getElementById('mainForm').requestSubmit()">
+    <button class="submit-btn">
       Prijavi se
       <span class="btn-arrow"></span>
     </button>
