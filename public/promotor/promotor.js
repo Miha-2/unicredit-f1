@@ -87,9 +87,12 @@ async function search() {
 function openModal(submissionId, name) {
   currentSubmissionId = submissionId;
   document.getElementById('modal-person').textContent = name;
-  document.getElementById('modal-time').value = '';
+  document.getElementById('time-mm').value = '';
+  document.getElementById('time-ss').value = '';
+  document.getElementById('time-ms').value = '';
   document.getElementById('modal-error').style.display = 'none';
   document.getElementById('time-modal').style.display = 'flex';
+  document.getElementById('time-mm').focus();
 }
 
 function closeModal() {
@@ -98,15 +101,27 @@ function closeModal() {
 }
 
 async function saveTime() {
-  const lap_time = document.getElementById('modal-time').value.trim();
+  const mm = document.getElementById('time-mm').value.trim();
+  const ss = document.getElementById('time-ss').value.trim();
+  const ms = document.getElementById('time-ms').value.trim();
   const errEl = document.getElementById('modal-error');
   errEl.style.display = 'none';
 
-  if (!lap_time) {
-    errEl.textContent = 'Vnesite čas.';
+  if (mm === '' || ss === '' || ms === '') {
+    errEl.textContent = 'Izpolnite vse segmente časa.';
     errEl.style.display = 'block';
     return;
   }
+
+  const ssNum = parseInt(ss);
+  const msNum = parseInt(ms);
+  if (ssNum > 59) {
+    errEl.textContent = 'Sekunde morajo biti med 0 in 59.';
+    errEl.style.display = 'block';
+    return;
+  }
+
+  const lap_time = `${String(mm).padStart(2,'0')}:${String(ssNum).padStart(2,'0')}.${String(msNum).padStart(3,'0')}`;
 
   try {
     const res = await fetch('/api/simulator', {
@@ -203,6 +218,17 @@ document.addEventListener('DOMContentLoaded', function () {
   document.getElementById('logout-btn').addEventListener('click', logout);
   document.getElementById('modal-cancel').addEventListener('click', closeModal);
   document.getElementById('modal-save').addEventListener('click', saveTime);
+
+  // Auto-advance between time segments
+  document.getElementById('time-mm').addEventListener('input', function() {
+    if (this.value.length >= 2) document.getElementById('time-ss').focus();
+  });
+  document.getElementById('time-ss').addEventListener('input', function() {
+    if (this.value.length >= 2) document.getElementById('time-ms').focus();
+  });
+  document.getElementById('time-ms').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') saveTime();
+  });
 
   lbInitEvents(getAuthHeaders());
 

@@ -517,3 +517,60 @@
     margin: 0 auto;
   }
 }
+
+/* ── Time segmented input ── */
+.time-input-wrap {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.time-segment {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.time-part {
+  width: 64px;
+  height: 52px;
+  background: #2a2a2a;
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 4px;
+  color: #fff;
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 700;
+  font-size: 28px;
+  text-align: center;
+  outline: none;
+  -moz-appearance: textfield;
+}
+
+.time-part::-webkit-outer-spin-button,
+.time-part::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+}
+
+.time-part:focus {
+  border-color: var(--red);
+}
+
+.time-unit {
+  font-size: 10px;
+  color: rgba(255,255,255,0.35);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.time-sep {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 700;
+  font-size: 28px;
+  color: rgba(255,255,255,0.4);
+  margin-bottom: 16px;
+}
+
+.time-part[id="time-ms"] {
+  width: 76px;
+}
