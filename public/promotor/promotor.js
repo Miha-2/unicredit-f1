@@ -195,7 +195,7 @@ function showDashboard(name) {
   loadRecent();
   setInterval(() => {
     if (document.getElementById('tab-prijave').style.display !== 'none') loadRecent();
-    else lbLoad(getAuthHeaders()).catch(() => {});
+    if (document.getElementById('tab-lestvice').style.display !== 'none') lbLoad(getAuthHeaders()).catch(() => {});
   }, 10000);
 }
 
@@ -221,10 +221,15 @@ document.addEventListener('DOMContentLoaded', function () {
 
   // Auto-advance between time segments
   document.getElementById('time-mm').addEventListener('input', function() {
+    if (this.value.length > 2) this.value = this.value.slice(0, 2);
     if (this.value.length >= 2) document.getElementById('time-ss').focus();
   });
   document.getElementById('time-ss').addEventListener('input', function() {
+    if (this.value.length > 2) this.value = this.value.slice(0, 2);
     if (this.value.length >= 2) document.getElementById('time-ms').focus();
+  });
+  document.getElementById('time-ms').addEventListener('input', function() {
+    if (this.value.length > 3) this.value = this.value.slice(0, 3);
   });
   document.getElementById('time-ms').addEventListener('keydown', function(e) {
     if (e.key === 'Enter') saveTime();

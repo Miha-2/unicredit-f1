@@ -110,17 +110,17 @@
       <label class="form-label">Čas</label>
       <div class="time-input-wrap">
         <div class="time-segment">
-          <input id="time-mm" class="time-part" type="number" min="0" max="99" placeholder="00"/>
+          <input id="time-mm" class="time-part" type="number" min="0" max="99" maxlength="2" placeholder="00"/>
           <span class="time-unit">min</span>
         </div>
         <span class="time-sep">:</span>
         <div class="time-segment">
-          <input id="time-ss" class="time-part" type="number" min="0" max="59" placeholder="00"/>
+          <input id="time-ss" class="time-part" type="number" min="0" max="59" maxlength="2" placeholder="00"/>
           <span class="time-unit">sek</span>
         </div>
         <span class="time-sep">.</span>
         <div class="time-segment">
-          <input id="time-ms" class="time-part" type="number" min="0" max="999" placeholder="000"/>
+          <input id="time-ms" class="time-part" type="number" min="0" max="999" maxlength="3" placeholder="000"/>
           <span class="time-unit">ms</span>
         </div>
       </div>
