@@ -179,6 +179,34 @@ async function login() {
   }
 }
 
+function openChangePwModal() {
+  document.getElementById('pw-current').value = '';
+  document.getElementById('pw-new').value = '';
+  document.getElementById('pw-error').style.display = 'none';
+  document.getElementById('change-pw-modal').style.display = 'flex';
+}
+
+function closeChangePwModal() {
+  document.getElementById('change-pw-modal').style.display = 'none';
+}
+
+async function saveChangedPassword() {
+  const current_password = document.getElementById('pw-current').value;
+  const new_password = document.getElementById('pw-new').value;
+  const errEl = document.getElementById('pw-error');
+  errEl.style.display = 'none';
+  try {
+    const res = await fetch('/api/auth/promotor/password', {
+      method: 'PUT',
+      headers: getAuthHeaders(),
+      body: JSON.stringify({ current_password, new_password })
+    });
+    const data = await res.json();
+    if (!res.ok) { errEl.textContent = data.error || 'Napaka.'; errEl.style.display = 'block'; return; }
+    closeChangePwModal();
+  } catch { errEl.textContent = 'Napaka pri shranjevanju.'; errEl.style.display = 'block'; }
+}
+
 function logout() {
   localStorage.removeItem('promotor_token');
   localStorage.removeItem('promotor_name');
@@ -216,6 +244,9 @@ document.addEventListener('DOMContentLoaded', function () {
     if (e.key === 'Enter') { clearTimeout(searchTimeout); search(); }
   });
   document.getElementById('logout-btn').addEventListener('click', logout);
+  document.getElementById('change-pw-btn').addEventListener('click', openChangePwModal);
+  document.getElementById('pw-cancel').addEventListener('click', closeChangePwModal);
+  document.getElementById('pw-save').addEventListener('click', saveChangedPassword);
   document.getElementById('modal-cancel').addEventListener('click', closeModal);
   document.getElementById('modal-save').addEventListener('click', saveTime);
 

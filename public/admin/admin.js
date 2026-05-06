@@ -88,7 +88,7 @@ function renderPromotorTable() {
           <td>${p.name}</td>
           <td style="color:var(--text-muted);">${p.username}</td>
           <td class="lap">${countMap[p.username] || 0}</td>
-          <td><button class="btn-delete" onclick="deletePromotor(${p.id})">Izbriši</button></td>
+          <td><button class="btn-delete" onclick="deletePromotor(${p.id})">Izbriši</button> <button class="btn-pw" onclick="openPwModal(${p.id}, '${p.name}')">Geslo</button></td>
         </tr>`).join('')}
       </tbody>
     </table>`;
@@ -101,6 +101,35 @@ async function deletePromotor(id) {
     loadPromotors();
     loadStats();
   } catch {}
+}
+
+function openPwModal(id, name) {
+  document.getElementById('pw-modal-name').textContent = name;
+  document.getElementById('pw-new').value = '';
+  document.getElementById('pw-error').style.display = 'none';
+  document.getElementById('pw-modal').dataset.promotorId = id;
+  document.getElementById('pw-modal').style.display = 'flex';
+}
+
+function closePwModal() {
+  document.getElementById('pw-modal').style.display = 'none';
+}
+
+async function saveNewPassword() {
+  const id = document.getElementById('pw-modal').dataset.promotorId;
+  const password = document.getElementById('pw-new').value;
+  const errEl = document.getElementById('pw-error');
+  errEl.style.display = 'none';
+  try {
+    const res = await fetch('/api/admin/promotors/' + id + '/password', {
+      method: 'PUT',
+      headers: getAuthHeaders(),
+      body: JSON.stringify({ password })
+    });
+    const data = await res.json();
+    if (!res.ok) { errEl.textContent = data.error || 'Napaka.'; errEl.style.display = 'block'; return; }
+    closePwModal();
+  } catch { errEl.textContent = 'Napaka pri shranjevanju.'; errEl.style.display = 'block'; }
 }
 
 function openAddModal() {
@@ -207,6 +236,8 @@ document.addEventListener('DOMContentLoaded', function () {
   document.getElementById('add-promotor-btn').addEventListener('click', openAddModal);
   document.getElementById('add-cancel').addEventListener('click', closeAddModal);
   document.getElementById('add-save').addEventListener('click', addPromotor);
+  document.getElementById('pw-cancel').addEventListener('click', closePwModal);
+  document.getElementById('pw-save').addEventListener('click', saveNewPassword);
   lbInitEvents(getAuthHeaders());
 
   if (token) {
