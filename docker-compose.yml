@@ -4,7 +4,7 @@ services:
     ports:
       - "3000:3000"
     volumes:
-      - f1data:/data
+      - ./data:/data
     restart: unless-stopped
     environment:
       - NODE_ENV=production
@@ -21,5 +21,3 @@ networks:
   traefik:
     external: true
     name: traefik
-volumes:
-  f1data:
