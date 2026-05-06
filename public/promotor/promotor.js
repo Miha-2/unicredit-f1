@@ -27,6 +27,7 @@ function renderSubmissionCard(s) {
           <div class="sub-top">
             <div class="sub-name">${s.ime} ${s.priimek}</div>
             <div class="sub-email">${s.email}</div>
+            ${s.telefon ? `<div class="sub-email">${s.telefon}</div>` : ''}
           </div>
           <div class="sub-bottom">
             <span class="badge ${hasConsent ? 'badge-yes' : 'badge-no'}">${hasConsent ? 'Nagrada' : 'Brez soglasja'}</span>

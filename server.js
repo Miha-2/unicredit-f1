@@ -107,7 +107,7 @@ app.post('/api/auth/admin', async (req, res) => {
 // ── Promotor: Recent submissions ─────────────────────────
 app.get('/api/submissions/recent', authPromotor, (req, res) => {
   const rows = query(`
-    SELECT s.id, s.ime, s.priimek, s.email, s.consent_marketing, s.created_at,
+    SELECT s.id, s.ime, s.priimek, s.email, s.telefon, s.consent_marketing, s.created_at,
       (SELECT lap_time FROM simulator_times WHERE submission_id = s.id ORDER BY id DESC LIMIT 1) as lap_time,
       (SELECT recorded_at FROM simulator_times WHERE submission_id = s.id ORDER BY id DESC LIMIT 1) as lap_recorded_at
     FROM submissions s
@@ -123,7 +123,7 @@ app.get('/api/submissions/search', authPromotor, (req, res) => {
   if (!q) return res.json([]);
   const like = `%${q}%`;
   const rows = query(`
-    SELECT s.id, s.ime, s.priimek, s.email, s.consent_marketing, s.created_at,
+    SELECT s.id, s.ime, s.priimek, s.email, s.telefon, s.consent_marketing, s.created_at,
       (SELECT lap_time FROM simulator_times WHERE submission_id = s.id ORDER BY id DESC LIMIT 1) as lap_time,
       (SELECT recorded_at FROM simulator_times WHERE submission_id = s.id ORDER BY id DESC LIMIT 1) as lap_recorded_at
     FROM submissions s
