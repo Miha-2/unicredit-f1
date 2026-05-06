@@ -67,12 +67,13 @@ function closeDupModal() {
 async function validateForm() {
   var ime = document.getElementById('field-ime').value.trim();
   var priimek = document.getElementById('field-priimek').value.trim();
-  var email = document.getElementById('field-email').value.trim();
+  var email = document.getElementById("field-email").value.trim();
+  var telefon = document.getElementById("field-telefon").value.trim();
   var cb1 = document.getElementById('cb1').classList.contains('checked');
   var cb2 = document.getElementById('cb2').classList.contains('checked');
   var valid = true;
 
-  ['error-ime', 'error-priimek', 'error-email', 'error-cb1'].forEach(clearError);
+  ['error-ime', 'error-priimek', 'error-email', 'error-telefon', 'error-cb1'].forEach(clearError);
 
   if (!ime) { showError('error-ime', 'Vnesite svoje ime.'); valid = false; }
   if (!priimek) { showError('error-priimek', 'Vnesite svoj priimek.'); valid = false; }
@@ -80,6 +81,10 @@ async function validateForm() {
   var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   if (!email) { showError('error-email', 'Vnesite e-poštni naslov.'); valid = false; }
   else if (!emailRegex.test(email)) { showError('error-email', 'E-poštni naslov ni veljaven.'); valid = false; }
+
+  var telefonRegex = /^\+?[\d\s\-()]{7,20}$/;
+  if (!telefon) { showError('error-telefon', 'Vnesite telefonsko številko.'); valid = false; }
+  else if (!telefonRegex.test(telefon)) { showError('error-telefon', 'Telefonska številka ni veljavna.'); valid = false; }
 
   if (!cb1) { showError('error-cb1', 'Strinjanje s pravili je obvezno.'); valid = false; }
 
@@ -97,7 +102,7 @@ async function validateForm() {
     var res = await fetch('/api/register', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ ime, priimek, email, consent_rules: cb1, consent_marketing: cb2 })
+      body: JSON.stringify({ ime, priimek, email, telefon, consent_rules: cb1, consent_marketing: cb2 })
     });
     var data = await res.json();
     if (res.status === 409 && data.duplicate) {
@@ -124,7 +129,7 @@ document.addEventListener('DOMContentLoaded', function () {
   document.getElementById('mainForm').addEventListener('keydown', function (e) {
     if (e.key === 'Enter') { e.preventDefault(); validateForm(); }
   });
-  ['field-ime', 'field-priimek', 'field-email'].forEach(function (id) {
+  ['field-ime', 'field-priimek', 'field-email', 'field-telefon'].forEach(function (id) {
     document.getElementById(id).addEventListener('input', function () {
       clearError('error-' + id.replace('field-', ''));
     });

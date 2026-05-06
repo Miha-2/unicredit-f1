@@ -33,6 +33,7 @@ function initSchema() {
       ime TEXT NOT NULL,
       priimek TEXT NOT NULL,
       email TEXT NOT NULL,
+      telefon TEXT,
       consent_rules INTEGER NOT NULL DEFAULT 0,
       consent_marketing INTEGER NOT NULL DEFAULT 0,
       created_at DATETIME DEFAULT CURRENT_TIMESTAMP
