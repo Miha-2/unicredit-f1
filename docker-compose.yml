@@ -9,6 +9,17 @@ services:
     environment:
       - NODE_ENV=production
       - DATA_DIR=/data
-
+    networks:
+      - traefik
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.uni.rule=Host(`${DOMAIN}`)"
+      - "traefik.http.routers.uni.entrypoints=websecure"
+      - "traefik.http.routers.uni.tls.certresolver=letsencrypt"
+      - "traefik.http.services.uni.loadbalancer.server.port=3000"
+networks:
+  traefik:
+    external: true
+    name: traefik
 volumes:
   f1data:
