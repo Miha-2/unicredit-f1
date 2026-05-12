@@ -37,6 +37,8 @@ function initSchema() {
       consent_rules INTEGER NOT NULL DEFAULT 0,
       consent_age INTEGER NOT NULL DEFAULT 0,
       consent_marketing INTEGER NOT NULL DEFAULT 0,
+      prize_1_received INTEGER NOT NULL DEFAULT 0,
+      prize_2_received INTEGER NOT NULL DEFAULT 0,
       created_at DATETIME DEFAULT CURRENT_TIMESTAMP
     );
 
@@ -67,6 +69,8 @@ function initSchema() {
     );
   `);
   ensureColumn('submissions', 'consent_age', 'INTEGER NOT NULL DEFAULT 0');
+  ensureColumn('submissions', 'prize_1_received', 'INTEGER NOT NULL DEFAULT 0');
+  ensureColumn('submissions', 'prize_2_received', 'INTEGER NOT NULL DEFAULT 0');
   save();
 }
 

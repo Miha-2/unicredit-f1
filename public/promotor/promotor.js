@@ -1,5 +1,6 @@
 let token = localStorage.getItem('promotor_token');
 let currentSubmissionId = null;
+let currentPrizeSubmissionId = null;
 
 function getAuthHeaders() {
   return { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token };
@@ -16,10 +17,22 @@ function formatDateShort(dt) {
   return d.toLocaleString('sl-SI', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' });
 }
 
+function escapeAttr(value) {
+  return String(value || '')
+    .replace(/&/g, '&amp;')
+    .replace(/'/g, '&#39;')
+    .replace(/"/g, '&quot;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;');
+}
+
 function renderSubmissionCard(s) {
   const hasConsent = s.consent_marketing == 1;
   const hasTime = !!s.lap_time;
+  const hasPrize1 = s.prize_1_received == 1;
+  const hasPrize2 = s.prize_2_received == 1;
   const hasFooter = hasTime || hasConsent;
+  const personName = `${s.ime} ${s.priimek}`;
   return `
     <div class="submission-card">
       <div class="sub-body">
@@ -31,6 +44,8 @@ function renderSubmissionCard(s) {
           </div>
           <div class="sub-bottom">
             <span class="badge ${hasConsent ? 'badge-yes' : 'badge-no'}">${hasConsent ? 'Nagrada' : 'Brez soglasja'}</span>
+            ${hasPrize1 ? '<span class="badge badge-prize">1. nagrada</span>' : ''}
+            ${hasPrize2 ? '<span class="badge badge-prize">2. nagrada</span>' : ''}
           </div>
         </div>
         <div class="sub-right">
@@ -42,9 +57,13 @@ function renderSubmissionCard(s) {
           ${hasTime ? `<div class="sub-lap"><span class="sub-lap-time">${s.lap_time}</span></div>` : ''}
         </div>
         <div class="sub-footer-right">
-          ${hasConsent ? `<button class="btn-add-time" onclick="openModal(${s.id}, '${s.ime} ${s.priimek}')">
+          ${hasConsent ? `<button class="btn-add-time" onclick="openModal(${s.id}, '${escapeAttr(personName)}')">
             <svg viewBox="0 0 24 24"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg>
             Čas
+          </button>
+          <button class="btn-add-time btn-prizes" onclick="openPrizeModal(${s.id}, '${escapeAttr(personName)}', ${hasPrize1 ? 1 : 0}, ${hasPrize2 ? 1 : 0})">
+            <svg viewBox="0 0 24 24"><path d="M20 12v10H4V12"/><path d="M2 7h20v5H2z"/><path d="M12 22V7"/><path d="M12 7H7.5a2.5 2.5 0 1 1 0-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 1 0 0-5C13 2 12 7 12 7z"/></svg>
+            Nagrade
           </button>` : ''}
         </div>
       </div>` : ''}
@@ -98,6 +117,48 @@ function openModal(submissionId, name) {
 function closeModal() {
   document.getElementById('time-modal').style.display = 'none';
   currentSubmissionId = null;
+}
+
+function openPrizeModal(submissionId, name, prize1, prize2) {
+  currentPrizeSubmissionId = submissionId;
+  document.getElementById('prize-modal-person').textContent = name;
+  document.getElementById('prize-1').checked = !!prize1;
+  document.getElementById('prize-2').checked = !!prize2;
+  document.getElementById('prize-modal-error').style.display = 'none';
+  document.getElementById('prize-modal').style.display = 'flex';
+}
+
+function closePrizeModal() {
+  document.getElementById('prize-modal').style.display = 'none';
+  currentPrizeSubmissionId = null;
+}
+
+async function savePrizes() {
+  const errEl = document.getElementById('prize-modal-error');
+  errEl.style.display = 'none';
+  try {
+    const res = await fetch('/api/submissions/' + currentPrizeSubmissionId + '/prizes', {
+      method: 'PUT',
+      headers: getAuthHeaders(),
+      body: JSON.stringify({
+        prize_1_received: document.getElementById('prize-1').checked,
+        prize_2_received: document.getElementById('prize-2').checked
+      })
+    });
+    const data = await res.json();
+    if (!res.ok) {
+      errEl.textContent = data.error || 'Napaka.';
+      errEl.style.display = 'block';
+      return;
+    }
+    closePrizeModal();
+    loadRecent();
+    const q = document.getElementById('search-input').value.trim();
+    if (q) search();
+  } catch {
+    errEl.textContent = 'Napaka pri shranjevanju.';
+    errEl.style.display = 'block';
+  }
 }
 
 async function saveTime() {
@@ -247,6 +308,8 @@ document.addEventListener('DOMContentLoaded', function () {
   document.getElementById('change-pw-btn').addEventListener('click', openChangePwModal);
   document.getElementById('pw-cancel').addEventListener('click', closeChangePwModal);
   document.getElementById('pw-save').addEventListener('click', saveChangedPassword);
+  document.getElementById('prize-modal-cancel').addEventListener('click', closePrizeModal);
+  document.getElementById('prize-modal-save').addEventListener('click', savePrizes);
   document.getElementById('modal-cancel').addEventListener('click', closeModal);
   document.getElementById('modal-save').addEventListener('click', saveTime);
 

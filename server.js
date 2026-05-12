@@ -107,7 +107,7 @@ app.post('/api/auth/admin', async (req, res) => {
 // ── Promotor: Recent submissions ─────────────────────────
 app.get('/api/submissions/recent', authPromotor, (req, res) => {
   const rows = query(`
-    SELECT s.id, s.ime, s.priimek, s.email, s.telefon, s.consent_marketing, s.created_at,
+    SELECT s.id, s.ime, s.priimek, s.email, s.telefon, s.consent_marketing, s.prize_1_received, s.prize_2_received, s.created_at,
       (SELECT lap_time FROM simulator_times WHERE submission_id = s.id ORDER BY id DESC LIMIT 1) as lap_time,
       (SELECT recorded_at FROM simulator_times WHERE submission_id = s.id ORDER BY id DESC LIMIT 1) as lap_recorded_at
     FROM submissions s
@@ -123,7 +123,7 @@ app.get('/api/submissions/search', authPromotor, (req, res) => {
   if (!q) return res.json([]);
   const like = `%${q}%`;
   const rows = query(`
-    SELECT s.id, s.ime, s.priimek, s.email, s.telefon, s.consent_marketing, s.created_at,
+    SELECT s.id, s.ime, s.priimek, s.email, s.telefon, s.consent_marketing, s.prize_1_received, s.prize_2_received, s.created_at,
       (SELECT lap_time FROM simulator_times WHERE submission_id = s.id ORDER BY id DESC LIMIT 1) as lap_time,
       (SELECT recorded_at FROM simulator_times WHERE submission_id = s.id ORDER BY id DESC LIMIT 1) as lap_recorded_at
     FROM submissions s
@@ -152,6 +152,18 @@ app.post('/api/simulator', authPromotor, (req, res) => {
     run('INSERT INTO simulator_times (submission_id, lap_time, recorded_at, promotor_id) VALUES (?, ?, ?, ?)',
       [submission_id, lap_time, recorded_at, req.user.id]);
   }
+  res.json({ success: true });
+});
+
+// ── Promotor: Mark received prizes ───────────────────────
+app.put('/api/submissions/:id/prizes', authPromotor, (req, res) => {
+  const { prize_1_received, prize_2_received } = req.body;
+  const sub = query('SELECT id FROM submissions WHERE id = ?', [req.params.id]);
+  if (!sub.length) return res.status(404).json({ error: 'Prijava ne obstaja.' });
+  run(
+    'UPDATE submissions SET prize_1_received = ?, prize_2_received = ? WHERE id = ?',
+    [prize_1_received ? 1 : 0, prize_2_received ? 1 : 0, req.params.id]
+  );
   res.json({ success: true });
 });
 
@@ -260,16 +272,18 @@ app.get('/api/admin/export', (req, res, next) => {
   } catch { return res.status(401).json({ error: 'Neveljaven žeton.' }); }
 
   const rows = query(`
-    SELECT s.ime, s.priimek, s.email, s.telefon, s.consent_age, s.consent_marketing,
+    SELECT s.ime, s.priimek, s.email, s.telefon, s.consent_age, s.consent_marketing, s.prize_1_received, s.prize_2_received,
       (SELECT lap_time FROM simulator_times WHERE submission_id = s.id ORDER BY lap_time ASC LIMIT 1) as best_time
     FROM submissions s
     ORDER BY s.created_at ASC
   `);
-  const header = 'Ime,Priimek,Email,Telefon,Starejsi od 18 let,Soglasje,Cas';
+  const header = 'Ime,Priimek,Email,Telefon,Starejsi od 18 let,Soglasje,Prejel 1. nagrado,Prejel 2. nagrado,Cas';
   const lines = rows.map(r => [
     `"${r.ime}"`, `"${r.priimek}"`, `"${r.email}"`, `"${r.telefon || ''}"`,
     r.consent_age ? 'da' : 'ne',
     r.consent_marketing ? 'da' : 'ne',
+    r.prize_1_received ? 'da' : 'ne',
+    r.prize_2_received ? 'da' : 'ne',
     r.best_time || ''
   ].join(','));
   res.setHeader('Content-Type', 'text/csv; charset=utf-8');

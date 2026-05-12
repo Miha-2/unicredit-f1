@@ -343,7 +343,13 @@
 }
 
 .sub-footer-left { flex: 1; }
-.sub-footer-right { flex-shrink: 0; }
+.sub-footer-right {
+  flex-shrink: 0;
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
 
 .sub-name {
   font-family: 'Barlow Condensed', sans-serif;
@@ -371,6 +377,8 @@
 .sub-bottom {
   display: flex;
   align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
 }
 
 .sub-meta { font-size: 12px; color: var(--text-dim); }
@@ -408,6 +416,7 @@
 .badge-yes { background: var(--red); color: white; }
 .badge-no { background: #2a2a2a; color: rgba(255,255,255,0.3); border: 1px solid #333; }
 .badge-time { background: #1a2a1a; color: #4caf50; border: 1px solid #2d4a2d; }
+.badge-prize { background: #26221a; color: #f0c36a; border: 1px solid rgba(240,195,106,0.28); }
 
 .btn-add-time {
   font-family: 'Barlow Condensed', sans-serif;
@@ -441,6 +450,17 @@
 }
 
 .btn-add-time:hover { background: var(--red); color: white; }
+
+.btn-prizes {
+  border-color: rgba(240,195,106,0.7);
+  color: #f0c36a;
+}
+
+.btn-prizes:hover {
+  background: #f0c36a;
+  border-color: #f0c36a;
+  color: #1a1a1a;
+}
 
 .no-results {
   font-size: 13px;
@@ -523,6 +543,33 @@
   padding: 0 20px;
   height: 52px;
   cursor: pointer;
+}
+
+.prize-checks {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 18px;
+}
+
+.prize-check {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 48px;
+  padding: 12px;
+  background: #242424;
+  border: 1px solid rgba(255,255,255,0.08);
+  color: rgba(255,255,255,0.85);
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.prize-check input {
+  width: 20px;
+  height: 20px;
+  accent-color: var(--red);
+  flex-shrink: 0;
 }
 
 #dashboard-screen, #login-screen {
