@@ -35,6 +35,7 @@ function initSchema() {
       email TEXT NOT NULL,
       telefon TEXT,
       consent_rules INTEGER NOT NULL DEFAULT 0,
+      consent_age INTEGER NOT NULL DEFAULT 0,
       consent_marketing INTEGER NOT NULL DEFAULT 0,
       created_at DATETIME DEFAULT CURRENT_TIMESTAMP
     );
@@ -65,7 +66,15 @@ function initSchema() {
       FOREIGN KEY (promotor_id) REFERENCES promotors(id)
     );
   `);
+  ensureColumn('submissions', 'consent_age', 'INTEGER NOT NULL DEFAULT 0');
   save();
+}
+
+function ensureColumn(table, column, definition) {
+  const info = query(`PRAGMA table_info(${table})`);
+  if (!info.some((row) => row.name === column)) {
+    db.run(`ALTER TABLE ${table} ADD COLUMN ${column} ${definition}`);
+  }
 }
 
 function query(sql, params = []) {

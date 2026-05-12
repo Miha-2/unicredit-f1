@@ -43,8 +43,8 @@ function authAdmin(req, res, next) {
 
 // ── Public: Registration ─────────────────────────────────
 app.post('/api/register', async (req, res) => {
-  const { ime, priimek, email, telefon, consent_rules, consent_marketing } = req.body;
-  if (!ime || !priimek || !email || !telefon || !consent_rules) {
+  const { ime, priimek, email, telefon, consent_rules, consent_age, consent_marketing } = req.body;
+  if (!ime || !priimek || !email || !telefon || !consent_rules || !consent_age) {
     return res.status(400).json({ error: 'Manjkajoči podatki.' });
   }
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -69,8 +69,8 @@ app.post('/api/register', async (req, res) => {
       }
     }
     run(
-      'INSERT INTO submissions (ime, priimek, email, telefon, consent_rules, consent_marketing) VALUES (?, ?, ?, ?, ?, ?)',
-      [ime.trim(), priimek.trim(), email.trim().toLowerCase(), telefon.trim(), consent_rules ? 1 : 0, consent_marketing ? 1 : 0]
+      'INSERT INTO submissions (ime, priimek, email, telefon, consent_rules, consent_age, consent_marketing) VALUES (?, ?, ?, ?, ?, ?, ?)',
+      [ime.trim(), priimek.trim(), email.trim().toLowerCase(), telefon.trim(), consent_rules ? 1 : 0, consent_age ? 1 : 0, consent_marketing ? 1 : 0]
     );
     res.json({ success: true });
   } catch (err) {
@@ -260,14 +260,15 @@ app.get('/api/admin/export', (req, res, next) => {
   } catch { return res.status(401).json({ error: 'Neveljaven žeton.' }); }
 
   const rows = query(`
-    SELECT s.ime, s.priimek, s.email, s.telefon, s.consent_marketing,
+    SELECT s.ime, s.priimek, s.email, s.telefon, s.consent_age, s.consent_marketing,
       (SELECT lap_time FROM simulator_times WHERE submission_id = s.id ORDER BY lap_time ASC LIMIT 1) as best_time
     FROM submissions s
     ORDER BY s.created_at ASC
   `);
-  const header = 'Ime,Priimek,Email,Telefon,Soglasje,Čas';
+  const header = 'Ime,Priimek,Email,Telefon,Starejsi od 18 let,Soglasje,Cas';
   const lines = rows.map(r => [
     `"${r.ime}"`, `"${r.priimek}"`, `"${r.email}"`, `"${r.telefon || ''}"`,
+    r.consent_age ? 'da' : 'ne',
     r.consent_marketing ? 'da' : 'ne',
     r.best_time || ''
   ].join(','));

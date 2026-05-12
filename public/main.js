@@ -1,6 +1,6 @@
 function toggle(id) {
   document.getElementById(id).classList.toggle('checked');
-  clearError(id === 'cb1' ? 'error-cb1' : 'error-cb2');
+  clearError('error-' + id);
 }
 
 function toggleReward() {
@@ -58,10 +58,11 @@ async function validateForm() {
   var email = document.getElementById("field-email").value.trim();
   var telefon = document.getElementById("field-telefon").value.trim();
   var cb1 = document.getElementById('cb1').classList.contains('checked');
+  var cbAge = document.getElementById('cb-age').classList.contains('checked');
   var cb2 = document.getElementById('cb2').classList.contains('checked');
   var valid = true;
 
-  ['error-ime', 'error-priimek', 'error-email', 'error-telefon', 'error-cb1'].forEach(clearError);
+  ['error-ime', 'error-priimek', 'error-email', 'error-telefon', 'error-cb1', 'error-cb-age'].forEach(clearError);
 
   if (!ime) { showError('error-ime', 'Vnesite svoje ime.'); valid = false; }
   if (!priimek) { showError('error-priimek', 'Vnesite svoj priimek.'); valid = false; }
@@ -75,6 +76,7 @@ async function validateForm() {
   else if (!telefonRegex.test(telefon)) { showError('error-telefon', 'Telefonska številka ni veljavna.'); valid = false; }
 
   if (!cb1) { showError('error-cb1', 'Strinjanje s pravili je obvezno.'); valid = false; }
+  if (!cbAge) { showError('error-cb-age', 'Potrditev starosti je obvezna.'); valid = false; }
 
   if (!valid) {
     var first = document.querySelector('.field-error[style*="block"]');
@@ -90,7 +92,7 @@ async function validateForm() {
     var res = await fetch('/api/register', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ ime, priimek, email, telefon, consent_rules: cb1, consent_marketing: cb2 })
+      body: JSON.stringify({ ime, priimek, email, telefon, consent_rules: cb1, consent_age: cbAge, consent_marketing: cb2 })
     });
     var data = await res.json();
     if (res.status === 409 && data.duplicate) {
